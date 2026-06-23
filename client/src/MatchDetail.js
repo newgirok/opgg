@@ -1,5 +1,5 @@
 //MatchDetail.js
-import React from "react";
+import React, { useState } from "react";
 import "./MatchDetail.css";
 
 const spellIdToName = {
@@ -51,11 +51,103 @@ const getQueueName = (queueId) => {
 };
 
 const MatchDetail = ({ match }) => {
+  const [showDetail, setShowDetail] = useState(false);
+
   if (!match || !match.champion) return null;
+
+  const formatTime = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleString();
+  };
+
+  const renderTeamTable = (team) => {
+    const maxDamage = Math.max(...team.map((p) => p.damage));
+    return (
+      <table className="team-table">
+        <thead>
+          <tr>
+            <th>소환사</th>
+            <th>챔피언</th>
+            <th>스펠</th>
+            <th>KDA</th>
+            <th>피해량</th>
+            <th>와드</th>
+            <th>CS</th>
+            <th>아이템</th>
+          </tr>
+        </thead>
+        <tbody>
+          {team.map((p, idx) => (
+            <tr
+              key={idx}
+              className={p.name === match.name ? "highlight-player" : ""}
+            >
+              <td>{p.name}</td>
+              <td>
+                <div className="champion-cell">
+                  <img
+                    src={getChampImg(p.champion)}
+                    alt={p.champion}
+                    className="champion-icon"
+                  />
+                  <span>{p.champion}</span>
+                </div>
+              </td>
+              <td>
+                {p.spells?.spell1Id && (
+                  <img
+                    src={getSpellImg(p.spells.spell1Id)}
+                    alt="spell1"
+                    width="20"
+                  />
+                )}
+                {p.spells?.spell2Id && (
+                  <img
+                    src={getSpellImg(p.spells.spell2Id)}
+                    alt="spell2"
+                    width="20"
+                  />
+                )}
+              </td>
+              <td>{p.kda}</td>
+              <td>
+                {p.damage}
+                <div className="damage-bg">
+                  <div
+                    className="damage-bar"
+                    style={{ width: `${(p.damage / maxDamage) * 100}%` }}
+                  ></div>
+                </div>
+              </td>
+              <td>{p.vision}</td>
+              <td>{p.cs}</td>
+              <td className="item-list">
+                {p.items.map(
+                  (item, idx) =>
+                    item !== 0 && (
+                      <img
+                        key={idx}
+                        src={getItemImg(item)}
+                        alt={`item${item}`}
+                        width="24"
+                        className="item-icon"
+                      />
+                    )
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  };
 
   return (
     <div>
-      <div className={`match-summary ${match.win ? "win" : "lose"}`}>
+      <div
+        className={`match-summary ${match.win ? "win" : "lose"}`}
+        onClick={() => setShowDetail(!showDetail)}
+      >
         <div className="champion-wrap">
           <img
             src={getChampImg(match.champion)}
@@ -95,6 +187,19 @@ const MatchDetail = ({ match }) => {
           )}
         </div>
       </div>
+
+      {showDetail && (
+        <div className="team-details">
+          <div>
+            게임 모드: {getQueueName(match.queueId)} |{" "}
+            {formatTime(match.gameStartTimestamp)}
+          </div>
+          <h4>아군 팀</h4>
+          {renderTeamTable(match.teams.ally)}
+          <h4>적군 팀</h4>
+          {renderTeamTable(match.teams.enemy)}
+        </div>
+      )}
     </div>
   );
 };
