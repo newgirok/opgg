@@ -1,0 +1,14 @@
+{
+  "name": "opgg",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "client": "npm start --workspace=client",
+    "server": "npm start --workspace=server",
+    "dev": "npm run client & npm run server"
+  }
+}
