@@ -1,22 +1,63 @@
-.rank-box {
-  background: #fff;
-  padding: 15px;
-  margin: 20px auto;
-  border-radius: 8px;
-  width: 300px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  font-size: 16px;
+.rank-card {
+  background: #31313c;
+  border-radius: 4px;
+  border: 1px solid #3d3d4e;
+  padding: 20px 16px;
 }
 
-.rank-player {
-  font-weight: bold;
-  font-size: 25px;
-  margin-bottom: 10px;
+.rank-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #f0f0f0;
+  margin-bottom: 16px;
+  word-break: break-all;
 }
 
-.rank-tier {
+.rank-tag {
+  font-size: 14px;
+  color: #9099a1;
+  font-weight: 400;
+}
+
+.rank-loading {
+  font-size: 13px;
+  color: #9099a1;
+}
+
+.rank-unranked {
+  padding: 8px 0;
+}
+
+.rank-tier-badge {
   font-size: 20px;
-  font-weight: bold;
-  margin: 8px 0;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.rank-lp {
+  font-size: 14px;
+  color: #9099a1;
+  margin-bottom: 12px;
+}
+
+.rank-record {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.rank-wins {
+  color: #5383e8;
+  font-weight: 600;
+}
+
+.rank-losses {
+  color: #e84057;
+  font-weight: 600;
+}
+
+.rank-winrate {
+  color: #9099a1;
 }

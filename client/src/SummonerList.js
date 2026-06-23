@@ -4,26 +4,26 @@ import { useParams } from "react-router-dom";
 import MatchDetail from "./MatchDetail";
 import Home from "./Home";
 import Rank from "./Rank";
+import "./SummonerList.css";
 
 let SummonersList = () => {
   const { region, name, tag } = useParams();
   const [matches, setMatches] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const getMatchList = () => {
+    setLoading(true);
     axios
       .get("http://localhost:8080/user/matches", {
-        params: {
-          region: region,
-          name: name,
-          tag: tag,
-        },
+        params: { region, name, tag },
       })
       .then((res) => {
-        // console.log(res.data);
         setMatches(res.data);
+        setLoading(false);
       })
       .catch((err) => {
         console.error("매치 리스트 불러오기 실패:", err);
+        setLoading(false);
       });
   };
 
@@ -32,14 +32,26 @@ let SummonersList = () => {
   }, [region, name, tag]);
 
   return (
-    <div>
+    <div className="summoner-page">
       <Home className="home-top" />
-      <Rank />
-      {matches.length > 0 ? (
-        matches.map((match, idx) => <MatchDetail key={idx} match={match} />)
-      ) : (
-        <p>전적을 불러오는 중...</p>
-      )}
+      <div className="summoner-content">
+        <div className="summoner-layout">
+          <aside className="summoner-aside">
+            <Rank />
+          </aside>
+          <main className="summoner-main">
+            {loading ? (
+              <div className="match-loading">전적을 불러오는 중...</div>
+            ) : matches.length > 0 ? (
+              matches.map((match, idx) => (
+                <MatchDetail key={idx} match={match} />
+              ))
+            ) : (
+              <div className="match-loading">전적 정보가 없습니다.</div>
+            )}
+          </main>
+        </div>
+      </div>
     </div>
   );
 };

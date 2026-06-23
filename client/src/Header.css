@@ -1,0 +1,41 @@
+.header {
+  background-color: #1c1c1e;
+  border-bottom: 1px solid #2d2d3a;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 20px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.header-logo {
+  font-size: 18px;
+  font-weight: 800;
+  color: #5383e8;
+  letter-spacing: -0.5px;
+}
+
+.header-nav {
+  display: flex;
+  gap: 24px;
+}
+
+.header-nav a {
+  color: #9099a1;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+
+.header-nav a:hover {
+  color: #f0f0f0;
+}
