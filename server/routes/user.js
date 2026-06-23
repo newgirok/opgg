@@ -149,6 +149,74 @@ const getMatchSummaries = async (ids, puuid) => {
               ),
               statPerks: player.perks.statPerks,
             },
+            teams: {
+              ally: data.info.participants
+                .filter((p) => p.teamId === player.teamId)
+                .map((p) => ({
+                  name: p.riotIdGameName || p.summonerName,
+                  champion: p.championName,
+                  items: [
+                    p.item0,
+                    p.item1,
+                    p.item2,
+                    p.item3,
+                    p.item4,
+                    p.item5,
+                    p.item6,
+                  ],
+                  spells: {
+                    spell1Id: p.summoner1Id,
+                    spell2Id: p.summoner2Id,
+                  },
+                  runes: {
+                    primaryStyle: p.perks.styles.find(
+                      (style) => style.description === "primaryStyle"
+                    ),
+                    subStyle: p.perks.styles.find(
+                      (style) => style.description === "subStyle"
+                    ),
+                    statPerks: p.perks.statPerks,
+                  },
+                  kda: `${p.kills}/${p.deaths}/${p.assists}`,
+                  cs: p.totalMinionsKilled,
+                  damage: p.totalDamageDealtToChampions,
+                  vision: p.visionScore,
+                  position: p.individualPosition,
+                })),
+              enemy: data.info.participants
+                .filter((p) => p.teamId !== player.teamId)
+                .map((p) => ({
+                  name: p.riotIdGameName || p.summonerName,
+                  champion: p.championName,
+                  items: [
+                    p.item0,
+                    p.item1,
+                    p.item2,
+                    p.item3,
+                    p.item4,
+                    p.item5,
+                    p.item6,
+                  ],
+                  spells: {
+                    spell1Id: p.summoner1Id,
+                    spell2Id: p.summoner2Id,
+                  },
+                  runes: {
+                    primaryStyle: p.perks.styles.find(
+                      (style) => style.description === "primaryStyle"
+                    ),
+                    subStyle: p.perks.styles.find(
+                      (style) => style.description === "subStyle"
+                    ),
+                    statPerks: p.perks.statPerks,
+                  },
+                  kda: `${p.kills}/${p.deaths}/${p.assists}`,
+                  cs: p.totalMinionsKilled,
+                  damage: p.totalDamageDealtToChampions,
+                  vision: p.visionScore,
+                  position: p.individualPosition,
+                })),
+            },
           };
         } catch (error) {
           console.error(
