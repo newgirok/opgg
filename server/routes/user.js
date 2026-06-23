@@ -83,6 +83,93 @@ const getMatchIds = async (puuid, start, count) => {
   }
 };
 
+const getMatchSummaries = async (ids, puuid) => {
+  const chunkSize = 5;
+  const summaries = [];
+
+  for (let i = 0; i < ids.length; i += chunkSize) {
+    const chunk = ids.slice(i, i + chunkSize);
+
+    const results = await Promise.allSettled(
+      chunk.map(async (matchId) => {
+        try {
+          const res = await axios.get(
+            `https://asia.api.riotgames.com/lol/match/v5/matches/${matchId}`,
+            {
+              headers: {
+                "X-Riot-Token": RIOT_API_KEY,
+              },
+            }
+          );
+
+          const data = res.data;
+          const player = data.info.participants.find((p) => p.puuid === puuid);
+
+          if (!player) {
+            console.error(`PUUID ${puuid} not found in match ${matchId}`);
+            return null;
+          }
+
+          return {
+            matchId,
+            championId: player.championId,
+            champion: player.championName,
+            level: player.champLevel,
+            kda: `${player.kills}/${player.deaths}/${player.assists}`,
+            win: player.win,
+            items: [
+              player.item0,
+              player.item1,
+              player.item2,
+              player.item3,
+              player.item4,
+              player.item5,
+              player.item6,
+            ],
+            name: player.riotIdGameName || player.summonerName,
+            tag: player.riotIdTagline || "",
+            position: player.individualPosition,
+            cs: player.totalMinionsKilled,
+            damage: player.totalDamageDealtToChampions,
+            vision: player.visionScore,
+            duration: data.info.gameDuration,
+            gameMode: data.info.gameMode,
+            queueId: data.info.queueId,
+            gameStartTimestamp: data.info.gameStartTimestamp,
+            spells: {
+              spell1Id: player.summoner1Id,
+              spell2Id: player.summoner2Id,
+            },
+            runes: {
+              primaryStyle: player.perks.styles.find(
+                (style) => style.description === "primaryStyle"
+              ),
+              subStyle: player.perks.styles.find(
+                (style) => style.description === "subStyle"
+              ),
+              statPerks: player.perks.statPerks,
+            },
+          };
+        } catch (error) {
+          console.error(
+            `Error fetching match ${matchId} : `,
+            error.response ? error.response.data : error.message
+          );
+        }
+      })
+    );
+    summaries.push(
+      ...results
+        .filter((result) => result && result.status !== "rejected")
+        .map((r) => r.value || r)
+    );
+
+    await delay(1500);
+  }
+
+  return summaries;
+};
+
 router.get("/", async (req, res) => {
   let userInfo = await getSummonerInfo(res.locals.name, res.locals.tag);
   res.json(userInfo);
@@ -96,7 +183,8 @@ router.get("/rank", async (req, res) => {
 router.get("/matches", async (req, res) => {
   let userInfo = await getSummonerInfo(res.locals.name, res.locals.tag);
   const ids = await getMatchIds(userInfo.puuid, 0, 20);
-  res.json(ids);
+  const summaries = await getMatchSummaries(ids, userInfo.puuid);
+  res.json(summaries);
 });
 
 module.exports = router;
