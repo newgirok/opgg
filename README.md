@@ -1,8 +1,8 @@
-# OP.GG Clone
+# OP.GG
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=white) ![Node.js](https://img.shields.io/badge/Node.js-최신-339933?style=flat-square&logo=node.js&logoColor=white) ![Express](https://img.shields.io/badge/Express-5-000000?style=flat-square&logo=express&logoColor=white)
 
-소환사 이름과 태그 입력 한 줄로 랭크 조회 → 최근 20게임 전적 → 아군/적군 팀 상세까지 확인하는 OP.GG 클론.
+소환사 이름과 태그로 랭크 조회, 최근 20게임 전적, 아군/적군 팀 상세를 확인하는 OP.GG 전적 검색 서비스.
 
 <p align="center">
   <img src="assets/demo/home.png" alt="OP.GG Clone 홈 화면" width="824">
