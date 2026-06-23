@@ -43,9 +43,34 @@ const getSummonerInfo = async (gameName, tagLine) => {
   }
 };
 
+const getUserRank = async (puuid) => {
+  try {
+    const getRank = await axios.get(
+      `https://kr.api.riotgames.com/lol/league/v4/entries/by-puuid/${puuid}`,
+      {
+        headers: {
+          "X-Riot-Token": RIOT_API_KEY,
+        },
+      }
+    );
+
+    return getRank.data[0];
+  } catch (error) {
+    console.error(
+      "Error fetching data:",
+      error.response ? error.response.data : error.message
+    );
+  }
+};
+
 router.get("/", async (req, res) => {
   let userInfo = await getSummonerInfo(res.locals.name, res.locals.tag);
   res.json(userInfo);
+});
+
+router.get("/rank", async (req, res) => {
+  let userInfo = await getSummonerInfo(res.locals.name, res.locals.tag);
+  res.json(await getUserRank(userInfo.puuid));
 });
 
 module.exports = router;
