@@ -63,6 +63,26 @@ const getUserRank = async (puuid) => {
   }
 };
 
+const getMatchIds = async (puuid, start, count) => {
+  try {
+    const ids_res = await axios.get(
+      `https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?start=${start}&count=${count}`,
+      {
+        headers: {
+          "X-Riot-Token": RIOT_API_KEY,
+        },
+      }
+    );
+
+    return ids_res.data;
+  } catch (error) {
+    console.error(
+      "Error fetching data:",
+      error.response ? error.response.data : error.message
+    );
+  }
+};
+
 router.get("/", async (req, res) => {
   let userInfo = await getSummonerInfo(res.locals.name, res.locals.tag);
   res.json(userInfo);
@@ -71,6 +91,12 @@ router.get("/", async (req, res) => {
 router.get("/rank", async (req, res) => {
   let userInfo = await getSummonerInfo(res.locals.name, res.locals.tag);
   res.json(await getUserRank(userInfo.puuid));
+});
+
+router.get("/matches", async (req, res) => {
+  let userInfo = await getSummonerInfo(res.locals.name, res.locals.tag);
+  const ids = await getMatchIds(userInfo.puuid, 0, 20);
+  res.json(ids);
 });
 
 module.exports = router;
